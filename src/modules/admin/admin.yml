@@ -1,0 +1,175 @@
+openapi: 3.0.0
+info:
+  title: Admin API
+  version: 1.0.0
+  description: API for managing admin registration, login, and profile creation.
+  contact:
+    name: Support Team
+    email:
+
+paths:
+  /admins/register:
+    post:
+      summary: Register a new admin
+      operationId: registerAdmin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Admin User"
+                email:
+                  type: string
+                  example: "admin@example.com"
+                password:
+                  type: string
+                  example: "Password123"
+      responses:
+        201:
+          description: Admin registered successfully
+        400:
+          description: Invalid input or email already exists
+        500:
+          description: Internal server error
+
+  /admins/verify:
+    get:
+      summary: Verify admin email
+      operationId: verifyAdminEmail
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "verificationTokenHere"
+      responses:
+        200:
+          description: Email verified successfully
+        400:
+          description: Invalid or expired token
+
+  /admins/login:
+    post:
+      summary: Admin login
+      operationId: loginAdmin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "admin@example.com"
+                password:
+                  type: string
+                  example: "Password123"
+      responses:
+        200:
+          description: Admin logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "jwtTokenHere"
+        400:
+          description: Invalid credentials
+
+  /admins/forget-password:
+    post:
+      summary: Request password reset link
+      operationId: forgetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "admin@example.com"
+      responses:
+        200:
+          description: Password reset link sent
+        400:
+          description: Email not registered
+        500:
+          description: Error sending password reset link
+
+  /admins/reset-password:
+    post:
+      summary: Reset admin password
+      operationId: resetAdminPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: "resetTokenHere"
+                password:
+                  type: string
+                  example: "NewPassword123"
+      responses:
+        200:
+          description: Password reset successfully
+        400:
+          description: Invalid or expired token
+
+  /admins/profile:
+    post:
+      summary: Create or update admin profile
+      operationId: createAdminProfile
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: "12345"
+                name:
+                  type: string
+                  example: "Admin User"
+                email:
+                  type: string
+                  example: "admin@example.com"
+                password:
+                  type: string
+                  example: "Password123"
+                socials:
+                  type: object
+                  properties:
+                    twitter:
+                      type: string
+                      example: "https://twitter.com/admin"
+                    linkedin:
+                      type: string
+                      example: "https://linkedin.com/in/admin"
+                whitePaper:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                footerAddress:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        201:
+          description: Admin profile created successfully
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
